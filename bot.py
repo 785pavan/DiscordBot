@@ -1,13 +1,16 @@
+import json
 import os
 import random
 
 import discord
+import requests as requests
 from discord.ext import commands
 from dotenv import load_dotenv
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
+apikey = os.getenv('TENORAPIKEY')
 
 # client
 client = discord.Client()
@@ -162,6 +165,36 @@ async def roll(context, number_of_dice: int, number_of_sides: int):
         for _ in range(number_of_dice)
     ]
     await context.send(', '.join(dice))
+
+
+@bot.command(name='morning', help='Gets Good morning Gifs')
+async def wish_morning(context):
+    search_term = 'Good Morning'
+    await get_gif(context, search_term)
+
+
+@bot.command(name='gif', help='Get Gifs from Tenor with or without keyword')
+async def get_gif(context, search_term=None):
+    if not search_term:
+        r = requests.get("https://g.tenor.com/v1/trending_terms?key=%s" % (apikey,))
+
+        if r.status_code == 200:
+            content = json.loads(r.content)
+            trending_terms = [item for item in content.get('results')]
+        else:
+            trending_terms = ['gif']
+        search_term = random.choice(trending_terms)
+    lmt = 50
+    url = "https://g.tenor.com/v1/search?q=%s&key=%s&limit=%s" % (search_term, apikey, lmt)
+    r = requests.get(url)
+    if r.status_code == 200:
+        content = json.loads(r.content)
+        wish_urls = [item.get('url') for item in content.get('results')]
+    else:
+        wish_urls = ['Bad Response']
+    wish_url = random.choice(wish_urls)
+    await context.send(wish_url)
+    await context.send('Gif from Tenor just for you (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧ : ' + search_term)
 
 
 @bot.command(name='create-channel')
