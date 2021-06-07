@@ -1,7 +1,6 @@
 import json
 import os
 import random
-
 import discord
 import requests as requests
 from discord.ext import commands
@@ -73,11 +72,13 @@ async def on_message(message):
 
         '"Captain Wuntch. Good to see you. But if you’re here, who’s guarding Hades?” – Captain Holt',
 
-        '"I’m playing Kwazy Cupcakes, I’m hydrated as hell, and I’m listening to Sheryl Crow. I’ve got my own party going on.” – Terry Jeffords',
+        '"I’m playing Kwazy Cupcakes, I’m hydrated as hell, and I’m listening to Sheryl Crow. I’ve got my own party '
+        'going on.” – Terry Jeffords',
 
         '"Anyone over the age of six celebrating a birthday should go to hell.” – Rosa Diaz',
 
-        '"Captain, turn your greatest weakness into your greatest strength. Like Paris Hilton RE: her sex tape.” – Gina Linetti',
+        '"Captain, turn your greatest weakness into your greatest strength. Like Paris Hilton RE: her sex tape.” – '
+        'Gina Linetti',
 
         '"Title of your sex tape.” — Amy Santiago'
     ]
@@ -90,7 +91,7 @@ async def on_message(message):
 
 
 @client.event
-async def on_error(event, *args, **kwargs):
+async def on_error(event, *args):
     with open('err.log', 'a') as f:
         if event == 'on_message':
             f.write(f'Unhandled message: {args[0]}\n')
@@ -155,6 +156,7 @@ async def nine_nine(context):
     ]
 
     response = random.choice(brooklyn_99_quotes)
+    print(response)
     await context.send(response)
 
 
@@ -164,6 +166,7 @@ async def roll(context, number_of_dice: int, number_of_sides: int):
         str(random.choice(range(1, number_of_sides + 1)))
         for _ in range(number_of_dice)
     ]
+    print(', '.join(dice))
     await context.send(', '.join(dice))
 
 
@@ -193,6 +196,7 @@ async def get_gif(context, search_term=None):
     else:
         wish_urls = ['Bad Response']
     wish_url = random.choice(wish_urls)
+    print(wish_url)
     await context.send(wish_url)
     await context.send('Gif from Tenor just for you (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧ : ' + search_term)
 
@@ -210,6 +214,7 @@ async def create_channel(ctx, channel_name='bot_testing'):
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CheckFailure):
+        print(error)
         await ctx.send('You do not have the correct role for this command.')
 
 
