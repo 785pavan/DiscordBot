@@ -16,7 +16,7 @@ client = discord.Client()
 
 
 @client.event
-async def on_ready():
+async def on_ready() -> None:
     for guild in client.guilds:
         if guild.name == GUILD:
             break
@@ -30,7 +30,7 @@ async def on_ready():
 
 
 @client.event
-async def on_member_join(member):
+async def on_member_join(member) -> None:
     await member.create_dm()
     await member.dm_channel_send(
         f'HI {member.name}, Welcome to test server'
@@ -208,6 +208,7 @@ async def create_channel(ctx, channel_name='bot_testing'):
     existing_channel = discord.utils.get(guild.channels, name=channel_name)
     if not existing_channel:
         print(f'Creating a new channel: {channel_name}')
+        await ctx.send(f'Creating a new channel: {channel_name}')
         await guild.create_text_channel(channel_name)
 
 
