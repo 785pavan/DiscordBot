@@ -198,12 +198,14 @@ async def get_gif(context, search_term=None):
     wish_url = random.choice(wish_urls)
     print(wish_url)
     await context.send(wish_url)
-    await context.send('Gif from Tenor just for you (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧ : ' + search_term)
+    await context.send('Gif from Tenor just for you ＼（〇_ｏ）／ : ' + search_term)
 
 
 @bot.command(name='create-channel')
 @commands.has_role('admin')
-async def create_channel(ctx, channel_name='bot_testing'):
+async def create_channel(ctx, channel_name: str = None):
+    if not channel_name:
+        raise discord.DiscordException('No channel name given')
     guild = ctx.guild
     existing_channel = discord.utils.get(guild.channels, name=channel_name)
     if not existing_channel:
@@ -217,6 +219,14 @@ async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CheckFailure):
         print(error)
         await ctx.send('You do not have the correct role for this command.')
+
+
+@bot.command(name='random_name', help='gen a random name')
+async def gen_rand_name(context, seed: int) -> None:
+    random.seed(seed)
+    list_name = ['sinch', 'Abhi']
+
+    await context.send(random.choice(list_name))
 
 
 bot.run(TOKEN)
